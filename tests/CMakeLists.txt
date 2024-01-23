@@ -176,6 +176,7 @@ if(AVIF_ENABLE_FUZZTEST)
     # Adds a fuzztest from file TEST_NAME.cc located in the gtest folder. Extra arguments
     # are considered as extra source files.
     macro(add_avif_fuzztest TEST_NAME)
+        #fuzztest_setup_fuzzing_flags()
         add_executable(${TEST_NAME} gtest/${TEST_NAME}.cc gtest/avif_fuzztest_helpers.cc ${ARGN})
         # FuzzTest bundles GoogleTest so no need to link to gtest librairies.
         target_link_libraries(${TEST_NAME} PRIVATE aviftest_helpers_internal)
