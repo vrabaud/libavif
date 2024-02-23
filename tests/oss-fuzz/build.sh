@@ -111,12 +111,18 @@ then
     for fuzz_entrypoint in $FUZZ_TESTS; do
       TARGET_FUZZER="${fuzz_basename}@$fuzz_entrypoint"
       # Write executer script
-      echo "#!/bin/sh
+      echo "#!/bin/bash
 # LLVMFuzzerTestOneInput for fuzzer detection.
 this_dir=\$(dirname \"\$0\")
 export TEST_DATA_DIRS=\$this_dir/corpus
 chmod +x \$this_dir/$fuzz_basename
-\$this_dir/$fuzz_basename --fuzz=$fuzz_entrypoint -- \$@
+# Only keep rss_limit_mb, the other arguments (usually
+# "-timeout=25 -seed=1337 -runs=4") are ignored.
+export ARGS=\$*
+ARGS=`sed "s/-timeout=\\([0-9]\\+\\)/--fuzz_for=\1s/g" \${ARGS}`
+ARGS="${ARGS/-seed=1337/}"
+ARGS="${ARGS/-runs=4/}"
+\$this_dir/$fuzz_basename --fuzz=$fuzz_entrypoint -- \${ARGS}
 chmod -x \$this_dir/$fuzz_basename" > $OUT/$TARGET_FUZZER
       chmod +x $OUT/$TARGET_FUZZER
     done
