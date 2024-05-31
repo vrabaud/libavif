@@ -622,7 +622,7 @@ endif()
 
 if(AVIF_USE_CXX)
     enable_language(CXX)
-    set(CMAKE_CXX_STANDARD 14)
+    set(CMAKE_CXX_STANDARD 17)
 endif()
 
 option(AVIF_BUILD_APPS "Build avif apps." OFF)
