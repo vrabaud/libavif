@@ -63,7 +63,7 @@ jobs:
         -DAVIF_ENABLE_EXPERIMENTAL_GAIN_MAP=ON
         -DAVIF_ENABLE_EXPERIMENTAL_METAV1=ON
         -DAVIF_ENABLE_EXPERIMENTAL_SAMPLE_TRANSFORM=ON
-        -DAVIF_ENABLE_WERROR=ON
+        -DAVIF_ENABLE_WERROR=ON -DCMAKE_INSTALL_PREFIX=./build/install
     - name: Build libavif (ninja)
       working-directory: ./build
       run: ninja
@@ -77,3 +77,22 @@ jobs:
           -lpng -ljpeg -lz -lm -ldl -lstdc++
 
         ./avifenc --help
+    - name: Install AVIF
+      working-directory: ./build
+      run: ninja install
+    - name: Test installed cmake
+      working-directory: ./build
+      run: >
+        mkdir test && cd test
+
+        echo "cmake_minimum_required(VERSION 3.13)
+              project(FindPackageTest)
+              message(STATUS ${CMAKE_PREFIX_PATH})
+              find_package(libavif REQUIRED)
+              if(TARGET avif)
+                message(STATUS "\""avif found"\"")
+              else()
+                message(FATAL_ERROR "\""avif not found"\"")
+              endif()" >> CMakeLists.txt
+
+        cmake . -DCMAKE_PREFIX_PATH=../install
