@@ -815,18 +815,15 @@ if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL)
         LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     )
 
-    # Enable CMake configs in VCPKG mode
-    if(BUILD_SHARED_LIBS OR VCPKG_TARGET_TRIPLET)
-        install(EXPORT ${PROJECT_NAME}-config DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
+    install(EXPORT ${PROJECT_NAME}-config DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
-        include(CMakePackageConfigHelpers)
-        write_basic_package_version_file(
-            ${PROJECT_NAME}-config-version.cmake VERSION ${PROJECT_VERSION} COMPATIBILITY SameMajorVersion
-        )
-        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
-                DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
-        )
-    endif()
+    include(CMakePackageConfigHelpers)
+    write_basic_package_version_file(
+        ${PROJECT_NAME}-config-version.cmake VERSION ${PROJECT_VERSION} COMPATIBILITY SameMajorVersion
+    )
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+    )
 
     # Handle both relative and absolute paths (e.g. NixOS) for a relocatable package
     if(IS_ABSOLUTE "${CMAKE_INSTALL_INCLUDEDIR}")
